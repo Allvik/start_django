@@ -15,11 +15,7 @@ class Migration(migrations.Migration):
             name='Game',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20)),
-                ('kol_users', models.IntegerField(default=0)),
-                ('next_round', models.IntegerField(default=1)),
-                ('round_start', models.BooleanField(default=False)),
-                ('time_start_round', models.DateField()),
+
             ],
         ),
     ]

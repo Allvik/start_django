@@ -5,19 +5,39 @@
     <title>Кекв</title>
 </head>
 <body>
-    <form action="/registration" method="post">
-        {% csrf_token %}
-        <label>
-            Ник
-            <input type="text" name="name">
-        </label>
-        <br>
-        <label>
-            Пароль
-            <input type="text" name="password">
-        </label>
-        <br>
-        <input type="submit">
-    </form>
+    Зарегистрироваться:
+    <div>
+        <form action="/registration" method="post">
+            {% csrf_token %}
+            <label>
+                Ник
+                <input type="text" name="name">
+            </label>
+            <br>
+            <label>
+                Пароль
+                <input type="text" name="password">
+            </label>
+            <br>
+            <input type="submit">
+        </form>
+    </div>
+    Войти:
+    <div>
+        <form action="/login" method="post">
+            {% csrf_token %}
+            <label>
+                Ник
+                <input type="text" name="name">
+            </label>
+            <br>
+            <label>
+                Пароль
+                <input type="text" name="password">
+            </label>
+            <br>
+            <input type="submit">
+        </form>
+    </div>
 </body>
 </html>
