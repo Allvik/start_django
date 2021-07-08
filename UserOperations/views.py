@@ -1,7 +1,10 @@
+import django.http
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from UserOperations.models import My_user
 from Game.models import Game
 import random
+import urllib.parse
 
 
 def index(request):
@@ -9,46 +12,46 @@ def index(request):
 
 
 def registration(request):
-    if request.method != "POST":
-        return
-    if "name" not in request.POST or "password" not in request.POST:
-        return
-    user_with_eq_login = My_user.objects.filter(name=request.POST["name"])
-    if user_with_eq_login is not None:
-        return
-    current_user = My_user(name=request.POST["name"], password=request.POST["password"],
-                                  cookie=random.randint(1, 10**9))
+    if request.method != "POST" or "name" not in request.POST or "password" not in request.POST or \
+            len(My_user.objects.filter(name=urllib.parse.quote_plus(request.POST["name"]))) != 0:
+        return django.http.HttpResponse(status=404)
+    current_user = My_user(name=urllib.parse.unquote_plus(request.POST["name"]),
+                           password=urllib.parse.unquote_plus(request.POST["password"]),
+                           cookie=random.randint(1, 10**9))
     current_user.save()
-    response = render(request, "yourCabinet.html")
+    response = HttpResponseRedirect('/yourCabinet')
     response.set_cookie("hat", current_user.cookie)
     return response
 
 
 def login(request):
-    if request.method != "POST":
-        return
-    if "name" not in request.POST or "password" not in request.POST:
-        return
-    current_user = My_user.objects.filter(name=request.POST["name"], password=request.POST["password"])
-    if current_user is None:
-        return
+    if request.method != "POST" or "name" not in request.POST or "password" not in request.POST:
+        return django.http.HttpResponse(status=404)
+    current_user = My_user.objects.filter(name=urllib.parse.unquote_plus(request.POST["name"]),
+                                          password=urllib.parse.unquote_plus(request.POST["password"]))
+    if len(current_user) == 0:
+        return django.http.HttpResponse(status=404)
     current_user = current_user[0]
-    response = render(request, "yourCabinet.html")
+    response = HttpResponseRedirect('/yourCabinet')
     response.set_cookie("hat", current_user.cookie)
     return response
 
 
-def create_game(request):
-    if request.method != "POST":
-        return
-    if "name" not in request.POST or "password" not in request.POST or "countPlayers" not in request.POST or "hat" not in request.COOKIES:
-        return
-
+def getCabinet(request):
+    if request.method != "GET" or "hat" not in request.COOKIES:
+        return django.http.HttpResponse(status=404)
+    cur_user = My_user.objects.filter(cookie=request.COOKIES["hat"])[0]
+    all_games = []
+    for i in cur_user.all_games:
+        all_games.append(Game.objects.filter(id=i)[0])
+    return render(request, "yourCabinet.html", {'games': all_games})
 
 
 def debug_base(request):
     print("Users:", list(My_user.objects.all()))
     print("Games:", list(Game.objects.all()))
+    print("Cookies: ", list(request.COOKIES))
+    return django.http.HttpResponse(status=404)
 
 
 def clear_bases(request):
@@ -56,3 +59,5 @@ def clear_bases(request):
         object_user.delete()
     for object_game in Game.objects.all():
         object_game.delete()
+    return django.http.HttpResponse(status=404)
+

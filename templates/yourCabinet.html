@@ -7,6 +7,7 @@
 <body>
     Создать игру
     <form method="post" action="createGame">
+        {% csrf_token %}
         <label>
             Название игры
             <input name="name" type="text">
@@ -26,5 +27,40 @@
             <input type="submit">
         </label>
     </form>
+    Войти в игру
+    <form method="post" action="enterGame">
+        {% csrf_token %}
+        <label>
+            Название игры
+            <input name="name" type="text">
+        </label>
+        <br>
+        <label>
+            Пароль игры
+            <input name="password" type="text">
+        </label>
+        <br>
+        <label>
+            <input type="submit">
+        </label>
+    </form>
+    <br>
+    Список активных игр:
+    <ul>
+        {% for i in games %}
+            <li>
+                {{ i.name }}
+                <br>
+                <form>
+                    <label>
+                        <input type="hidden" value= {{ i.id }}>
+                    </label>
+                    <label>
+                        <input type="submit" value="Выбрать игру">
+                    </label>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Слова</title>
+</head>
+<body>
+    Придумайте 5 слов для игры
+    <form method="post" action="makeWords">
+        {% csrf_token %}
+        <label>
+            Первое слово:
+            <input type="text" name="word1">
+        </label>
+        <br>
+        <label>
+            Второе слово:
+            <input type="text" name="word2">
+        </label>
+        <br>
+        <label>
+            Третье слово:
+            <input type="text" name="word3">
+        </label>
+        <br>
+        <label>
+            Четвертое слово:
+            <input type="text" name="word4">
+        </label>
+        <br>
+        <label>
+            Пятое слово:
+            <input type="text" name="word5">
+        </label>
+        <br>
+        <label>
+            <input type="submit">
+        </label>
+    </form>
+</body>
+</html>
