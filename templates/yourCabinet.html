@@ -51,9 +51,10 @@
             <li>
                 {{ i.name }}
                 <br>
-                <form>
+                <form method="post" action="play">
+                    {% csrf_token %}
                     <label>
-                        <input type="hidden" value= {{ i.id }}>
+                        <input name="id" type="hidden" value={{ i.id }}>
                     </label>
                     <label>
                         <input type="submit" value="Выбрать игру">
