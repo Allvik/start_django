@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Игра</title>
+</head>
+<body>
+    {% if game_end %}
+        Игра закончена
+    {% else %}
+        {% if move1 %}
+            {% if started %}
+                {{ word }}
+                <br>
+                Слово отгадано?
+                <form method="post" action="no">
+                    {% csrf_token %}
+                    <input type="submit" value="Нет">
+                </form>
+                <br>
+                <form method="post" action="yes">
+                    {% csrf_token %}
+                    <input type="submit" value="Да">
+                </form>
+            {% else %}
+                Вы готовы начать раунд?
+                <form method="post" action="start_round">
+                    {% csrf_token %}
+                    <input type="submit" value="Да">
+                </form>
+            {% endif %}
+        {% elif move2 %}
+            {% if started %}
+                Вы отгадываете, раунд уже идет!
+            {% else %}
+                Вы отгадываете в этом раунде, но он еще не начался
+            {% endif %}
+        {% else %}
+            {% if started %}
+                Раунд начался
+            {% else %}
+                Раунд еще не начался
+            {% endif %}
+        {% endif %}
+    {% endif %}
+</body>
+</html>
