@@ -121,13 +121,9 @@ def updateGame(game):
             game.next_round += 1
             game.round_start = False
     game_end = True
-    deb = 0
     for i in game.all_remaining_words:
         if i is True:
             game_end = False
-            print(game.all_words[deb], end=' ')
-        deb += 1
-    print(game.number_word)
     game.game_end = game_end
     game.save()
 
@@ -175,10 +171,14 @@ def yesWord(request):
     updateGame(cur_game)
     if cur_game.round_start is False:
         return HttpResponse("Раунд кончился, вы не успели")
-    person1 = cur_game.all_users[(cur_game.next_round * 2) % cur_game.kol_users + ((cur_game.next_round * 2) //
-                                 cur_game.kol_users) % 2][0]
+    num1 = (cur_game.next_round * 2) % cur_game.kol_users + ((cur_game.next_round * 2) // cur_game.kol_users) % 2
+    print(num1)
+    person1 = cur_game.all_users[num1][0]
     if person1 == int(request.COOKIES["user"]):
         cur_game.all_remaining_words[cur_game.number_word] = False
+        cur_game.all_users[num1][1] += 1
+        cur_game.all_users[num1 ^ 1][1] += 1
+        print(cur_game.all_users[num1][1])
         cur_game.save()
         updateGame(cur_game)
         next_word(cur_game)
@@ -200,3 +200,31 @@ def noWord(request):
         next_word(cur_game)
         return HttpResponseRedirect('/play')
     return HttpResponse("Не вы отгадываете")
+
+
+class person_for_standings():
+    points = 0
+    name = ""
+
+    def __init__(self, _points, _name):
+        self.points = _points
+        self.name = _name
+
+
+def getStandings(request):
+    if "user" not in request.COOKIES or "game" not in request.COOKIES or request.method != "GET":
+        return HttpResponse("У вас нет куки")
+    cur_game = Game.objects.filter(id=request.COOKIES["game"])[0]
+    there_is_user = False
+    for i in cur_game.all_users:
+        if i[0] == int(request.COOKIES["user"]):
+            there_is_user = True
+            break
+    if not there_is_user:
+        return HttpResponse("У вас нет такой игры")
+    all_users = []
+    for i in cur_game.all_users:
+        all_users.append(person_for_standings(i[1], My_user.objects.filter(id=i[0])[0].name))
+    all_users.sort(key=lambda x: -x.points)
+    print(all_users[1].name, all_users[1].points)
+    return render(request, "standings.html", {"all_users": all_users})

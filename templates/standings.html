@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Текущие результаты</title>
+</head>
+<body>
+    <ol>
+        {% for i in all_users %}
+            <li>
+                {{ i.name }}: {{ i.points }}
+            </li>
+        {% endfor %}
+    </ol>
+</body>
+</html>

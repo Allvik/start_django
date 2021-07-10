@@ -8,5 +8,6 @@ urlpatterns = [
     path('makeWords', views.makeWords),
     path('start_round', views.start_round),
     path('no', views.noWord),
-    path('yes', views.yesWord)
+    path('yes', views.yesWord),
+    path('standings', views.getStandings)
 ]
