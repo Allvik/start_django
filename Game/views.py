@@ -81,10 +81,12 @@ def play(request):
     change = ((2 * cur_game.next_round // cur_game.kol_users) & 1)
     person1 = cur_game.all_users[((2 * cur_game.next_round) % cur_game.kol_users) ^ change][0]
     person2 = cur_game.all_users[((2 * cur_game.next_round) % cur_game.kol_users + 1) ^ change][0]
-    return render(request, "game.html", {"move1": (person1 == cur_user.id), "move2": (person2 == cur_user.id),
+    response = render(request, "game.html", {"move1": (person1 == cur_user.id), "move2": (person2 == cur_user.id),
                                          "started": cur_game.round_start,
                                          "word": cur_game.all_words[cur_game.number_word],
                                          "game_end": cur_game.game_end})
+    response.set_cookie("game", cur_game.id)
+    return response
 
 
 def makeWords(request):
